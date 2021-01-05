@@ -195,7 +195,7 @@ Object.keys(ARKitManager).forEach(key => {
 });
 
 const addDefaultsToSnapShotFunc = funcName => (
-  { target = 'cameraRoll', format = 'png' } = {},
+  { target = 'cache', format = 'png' } = {},
 ) => ARKitManager[funcName]({ target, format });
 
 ARKit.snapshot = addDefaultsToSnapShotFunc('snapshot');

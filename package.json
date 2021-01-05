@@ -1,30 +1,41 @@
 {
-  "name": "react-native-arkit",
-  "repository": {
+  "_from": "git+https://github.com/Scandy-co/react-native-arkit.git",
+  "_id": "react-native-arkit@0.9.0",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/react-native-arkit",
+  "_phantomChildren": {},
+  "_requested": {
     "type": "git",
-    "url": "https://github.com/HippoAR/react-native-arkit.git"
+    "raw": "git+https://github.com/Scandy-co/react-native-arkit",
+    "rawSpec": "git+https://github.com/Scandy-co/react-native-arkit",
+    "saveSpec": "git+https://github.com/Scandy-co/react-native-arkit.git",
+    "fetchSpec": "https://github.com/Scandy-co/react-native-arkit.git",
+    "gitCommittish": null
   },
-  "version": "0.9.0",
-  "description": "React Native binding for iOS ARKit",
-  "author": "Zehao Li <qft.gtr@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/HippoAR/react-native-arkit",
-  "keywords": ["react-native", "react", "native", "ARKit", "AR"],
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "git+https://github.com/Scandy-co/react-native-arkit.git#3e916f96c5e77d7d008f1c271686be1200c96aad",
+  "_spec": "git+https://github.com/Scandy-co/react-native-arkit",
+  "_where": "/Users/damian/Desktop/Proyectos/Trivia /Native Apps/Trivia",
+  "author": {
+    "name": "Zehao Li",
+    "email": "qft.gtr@gmail.com"
   },
-  "peerDependencies": {
-    "react-native": ">=0.46.0",
-    "react": "*",
-    "prop-types": "*"
+  "bugs": {
+    "url": "https://github.com/HippoAR/react-native-arkit/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "@panter/react-animation-frame": "^0.3.7",
     "fast-deep-equal": "^1.0.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0"
   },
+  "deprecated": false,
+  "description": "React Native binding for iOS ARKit",
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "babel-preset-react-native": "^2.1.0",
@@ -37,7 +48,31 @@
     "eslint-plugin-prettier": "^2.1.1",
     "eslint-plugin-react": "^7.0.1",
     "prettier": "^1.3.1",
-    "react": "16.2.0",
-    "prop-types": "^15.6.0"
-  }
+    "prop-types": "^15.6.0",
+    "react": "16.2.0"
+  },
+  "homepage": "https://github.com/HippoAR/react-native-arkit",
+  "keywords": [
+    "react-native",
+    "react",
+    "native",
+    "ARKit",
+    "AR"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "react-native-arkit",
+  "peerDependencies": {
+    "react-native": ">=0.46.0",
+    "react": "*",
+    "prop-types": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HippoAR/react-native-arkit.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.9.0"
 }

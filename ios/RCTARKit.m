@@ -8,6 +8,7 @@
 
 #import "RCTARKit.h"
 #import "RCTConvert+ARKit.h"
+#import "GameNode.h"
 
 @import CoreLocation;
 
@@ -16,7 +17,7 @@
 }
 
 @property (nonatomic, strong) ARSession* session;
-@property (nonatomic, strong) ARWorldTrackingConfiguration *configuration;
+@property (nonatomic, strong) ARConfiguration *configuration;
 
 @end
 
@@ -144,7 +145,7 @@ static dispatch_once_t onceToken;
 
 }
 - (void)reset {
-  if (ARWorldTrackingConfiguration.isSupported) {
+  if( ARWorldTrackingConfiguration.isSupported || ARFaceTrackingConfiguration.isSupported ) {
     [self.session runWithConfiguration:self.configuration options:ARSessionRunOptionRemoveExistingAnchors | ARSessionRunOptionResetTracking];
   }
 }
@@ -174,7 +175,6 @@ static dispatch_once_t onceToken;
   return self.arView ? self.arView.showsStatistics : true;
 }
 
-
 - (void)setDebug:(BOOL)debug {
   if( self.arView ){
     if (debug) {
@@ -188,14 +188,32 @@ static dispatch_once_t onceToken;
   }
 }
 
+- (BOOL)faceTrackingMode {
+    return [self.configuration isKindOfClass: [ARWorldTrackingConfiguration class]] ? false : true;
+}
+
+- (void)setFaceTrackingMode:(BOOL)faceMode {
+    if( faceMode == YES ) {
+        if (!ARFaceTrackingConfiguration.isSupported) return;
+        self.configuration = [ARFaceTrackingConfiguration new];
+    } else {
+        if (!ARWorldTrackingConfiguration.isSupported) return;
+        ARWorldTrackingConfiguration *configuration = [ARWorldTrackingConfiguration new];
+        configuration.environmentTexturing = AREnvironmentTexturingAutomatic;
+        configuration.planeDetection = ARPlaneDetectionVertical;
+        self.configuration =configuration;
+    }
+    [self reset];
+}
+
 - (ARPlaneDetection)planeDetection {
     ARWorldTrackingConfiguration *configuration = (ARWorldTrackingConfiguration *) self.configuration;
     return configuration.planeDetection;
 }
 
 - (void)setPlaneDetection:(ARPlaneDetection)planeDetection {
+    if( self.faceTrackingMode == YES ) return;
     ARWorldTrackingConfiguration *configuration = (ARWorldTrackingConfiguration *) self.configuration;
-
     configuration.planeDetection = planeDetection;
     [self resume];
 }
@@ -247,6 +265,7 @@ static dispatch_once_t onceToken;
 }
 
 - (void)setWorldAlignment:(ARWorldAlignment)worldAlignment {
+    if( self.faceTrackingMode == YES ) return;
     ARConfiguration *configuration = self.configuration;
     if (worldAlignment == ARWorldAlignmentGravityAndHeading) {
         configuration.worldAlignment = ARWorldAlignmentGravityAndHeading;
@@ -260,7 +279,7 @@ static dispatch_once_t onceToken;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 110300
 - (void)setDetectionImages:(NSArray*) detectionImages {
-
+    if( self.faceTrackingMode == YES ) return;
     if (@available(iOS 11.3, *)) {
         ARWorldTrackingConfiguration *configuration = self.configuration;
         NSSet *detectionImagesSet = [[NSSet alloc] init];
@@ -531,25 +550,6 @@ static NSDictionary * vector4ToJson(const SCNVector4 v) {
 }
 
 
-
-#pragma mark - Lazy loads
-
--(ARWorldTrackingConfiguration *)configuration {
-    if (_configuration) {
-        return _configuration;
-    }
-
-    if (!ARWorldTrackingConfiguration.isSupported) {}
-
-    _configuration = [ARWorldTrackingConfiguration new];
-    
-    _configuration.environmentTexturing = AREnvironmentTexturingAutomatic;
-    _configuration.planeDetection = ARPlaneDetectionHorizontal;
-    return _configuration;
-}
-
-
-
 #pragma mark - snapshot methods
 
 - (void)hitTestSceneObjects:(const CGPoint)tapPoint resolve:(RCTARKitResolve)resolve reject:(RCTARKitReject)reject {
@@ -807,45 +807,46 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
     [self.rendererDelegates removeObject:delegate];
      NSLog(@"removed, number of renderer delegates %d", [self.rendererDelegates count]);
 }
-- (void)renderer:(id <SCNSceneRenderer>)renderer willUpdateNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor {
-}
-
 
 - (void)renderer:(id <SCNSceneRenderer>)renderer didAddNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor {
+    
+}
 
-    NSDictionary *anchorDict = [self makeAnchorDetectionResult:node anchor:anchor];
-
-    if (self.onPlaneDetected && [anchor isKindOfClass:[ARPlaneAnchor class]]) {
-        self.onPlaneDetected(anchorDict);
-    } else if (self.onAnchorDetected) {
-        self.onAnchorDetected(anchorDict);
-    }
-
+-(SCNNode *)renderer:(id<SCNSceneRenderer>)renderer nodeForAnchor:(ARAnchor *)anchor {
+    ARSCNFaceGeometry *faceGeometry = [ARSCNFaceGeometry faceGeometryWithDevice:self.arView.device];
+    
+    SCNNode *node = [SCNNode nodeWithGeometry:faceGeometry];
+    node.geometry.firstMaterial.fillMode = SCNFillModeLines;
+    node.geometry.firstMaterial.transparency = 0;
+    GameNode *hat = [[GameNode alloc] initWithImage:[UIImage imageNamed:@"hat"] width:0.25 height:0.14];
+    hat.name = @"hat";
+    [node addChildNode:hat];
+    
+    GameNode *glassess = [[GameNode alloc] initWithImage:[UIImage imageNamed:@"glasses"] width:0.14 height:0.064];
+    glassess.name = @"glasses";
+    [node addChildNode:glassess];
+    
+    return node;
 }
 
 - (void)renderer:(id <SCNSceneRenderer>)renderer didUpdateNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor {
-    NSDictionary *anchorDict = [self makeAnchorDetectionResult:node anchor:anchor];
-
-    if (self.onPlaneUpdated && [anchor isKindOfClass:[ARPlaneAnchor class]]) {
-        self.onPlaneUpdated(anchorDict);
-    }else if (self.onAnchorUpdated) {
-        self.onAnchorUpdated(anchorDict);
+    ARSCNFaceGeometry *faceGeometry = (ARSCNFaceGeometry *)node.geometry;
+    ARFaceAnchor *faceAnchor = (ARFaceAnchor *)anchor;
+    [faceGeometry updateFromFaceGeometry:faceAnchor.geometry];
+    
+    SCNNode *hat = [node childNodeWithName:@"hat" recursively:NO];
+    if( hat != NULL ) {
+        hat.position = SCNVector3Make(faceAnchor.geometry.vertices[20][0], faceAnchor.geometry.vertices[20][1], faceAnchor.geometry.vertices[20][2]);
     }
-
+    SCNNode *glasses = [node childNodeWithName:@"glasses" recursively:NO];
+    if( glasses != NULL ) {
+        glasses.position = SCNVector3Make(faceAnchor.geometry.vertices[16][0], faceAnchor.geometry.vertices[16][1], faceAnchor.geometry.vertices[16][2]);
+    }
 }
 
 - (void)renderer:(id<SCNSceneRenderer>)renderer didRemoveNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor {
-    NSDictionary *anchorDict = [self makeAnchorDetectionResult:node anchor:anchor];
-
-    if (self.onPlaneRemoved && [anchor isKindOfClass:[ARPlaneAnchor class]]) {
-        self.onPlaneRemoved(anchorDict);
-    } else if (self.onAnchorRemoved) {
-        self.onAnchorRemoved(anchorDict);
-    }
+    
 }
-
-
-
 
 #pragma mark - ARSessionDelegate
 
