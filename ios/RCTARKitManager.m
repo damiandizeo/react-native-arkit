@@ -13,7 +13,7 @@
 #import <UIKit/UIKit.h>
 #import <Photos/Photos.h>
 #import "color-grabber.h"
-
+#import <ARKit/ARKit.h>
 
 @implementation RCTARKitManager
 
@@ -77,6 +77,7 @@ RCT_EXPORT_MODULE()
     
     
     return @{
+             @"isSupported": @(ARFaceTrackingConfiguration.isSupported),
              @"ARHitTestResultType": arHitTestResultType,
              @"ARPlaneDetection": arPlaneDetection,
              @"ARPlaneAnchorAlignment": arAnchorAligment,

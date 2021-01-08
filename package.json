@@ -1,5 +1,5 @@
 {
-  "_from": "git+https://github.com/Scandy-co/react-native-arkit.git",
+  "_from": "git+https://github.com/damiandizeo/react-native-arkit.git",
   "_id": "react-native-arkit@0.9.0",
   "_inBundle": false,
   "_integrity": "",
@@ -7,18 +7,18 @@
   "_phantomChildren": {},
   "_requested": {
     "type": "git",
-    "raw": "git+https://github.com/Scandy-co/react-native-arkit",
-    "rawSpec": "git+https://github.com/Scandy-co/react-native-arkit",
-    "saveSpec": "git+https://github.com/Scandy-co/react-native-arkit.git",
-    "fetchSpec": "https://github.com/Scandy-co/react-native-arkit.git",
+    "raw": "git+https://github.com/damiandizeo/react-native-arkit.git",
+    "rawSpec": "git+https://github.com/damiandizeo/react-native-arkit.git",
+    "saveSpec": "git+https://github.com/damiandizeo/react-native-arkit.git",
+    "fetchSpec": "https://github.com/damiandizeo/react-native-arkit.git",
     "gitCommittish": null
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "git+https://github.com/Scandy-co/react-native-arkit.git#3e916f96c5e77d7d008f1c271686be1200c96aad",
-  "_spec": "git+https://github.com/Scandy-co/react-native-arkit",
+  "_resolved": "git+https://github.com/damiandizeo/react-native-arkit.git#5c6b37b884a58496e3a710a791f648125bb8cfcb",
+  "_spec": "git+https://github.com/damiandizeo/react-native-arkit.git",
   "_where": "/Users/damian/Desktop/Proyectos/Trivia /Native Apps/Trivia",
   "author": {
     "name": "Zehao Li",

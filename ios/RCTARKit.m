@@ -42,7 +42,7 @@ static ARSCNView *arView = nil;
 static dispatch_once_t onceToken;
 
 + (bool)isInitialized {
-    return instance !=nil;
+    return instance != nil;
 }
 
 + (instancetype)sharedInstance {

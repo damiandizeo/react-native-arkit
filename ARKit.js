@@ -247,7 +247,7 @@ ARKit.propTypes = {
   onTapOnPlaneNoExtent: PropTypes.func,
   onEvent: PropTypes.func,
   isMounted: PropTypes.func,
-  isInitialized: PropTypes.func,
+  isInitialized: PropTypes.func
 };
 
 const RCTARKit = requireNativeComponent('RCTARKit', ARKit);
